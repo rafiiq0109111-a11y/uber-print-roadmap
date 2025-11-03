@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>لوحة تنفيذ مشروع "أوبر للطباعة" – Roadmap</title>
+<style>
+  :root{
+    --bg:#0e0f13;
+    --card:#151821;
+    --muted:#aab0c0;
+    --text:#e8ecf4;
+    --brand:#2a72ff;   /* أزرق طباعة */
+    --accent:#ff7a2a;  /* لمسة برتقالي */
+    --ok:#22c55e;
+    --warn:#f59e0b;
+    --danger:#ef4444;
+    --radius:18px;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:radial-gradient(1200px 600px at 80% -10%,rgba(42,114,255,.12),transparent 60%),
+    radial-gradient(1000px 500px at -10% 120%,rgba(255,122,42,.12),transparent 60%),var(--bg);
+    color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Noto Sans",Tahoma;
+  }
+  header{
+    position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(14,15,19,.95),rgba(14,15,19,.75));backdrop-filter: blur(6px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .container{max-width:1100px;margin:auto;padding:18px}
+  .topbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .title{display:flex;gap:12px;align-items:center}
+  .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#0ea5e9);display:grid;place-items:center;box-shadow:var(--shadow)}
+  .logo i{font-style:normal;font-weight:800;color:white}
+  h1{font-size:20px;margin:0}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid rgba(255,255,255,.12);background:#0f121a;color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;transition:.2s;display:inline-flex;gap:8px;align-items:center}
+  .btn:hover{background:#131827;border-color:rgba(255,255,255,.22)}
+  .btn.primary{background:linear-gradient(135deg,var(--brand),#5aa0ff);border-color:transparent;color:white}
+  .btn.accent{background:linear-gradient(135deg,var(--accent),#ffaa79);border-color:transparent;color:#1f1309}
+  .btn.ghost{background:transparent}
+  .btn.small{padding:8px 10px;border-radius:10px;font-size:14px}
+  .search{min-width:240px}
+  input[type="search"], input[type="date"], input[type="text"]{
+    background:#0f121a;color:var(--text);border:1px solid rgba(255,255,255,.12);padding:10px 12px;border-radius:12px;outline:none;transition:.2s
+  }
+  input[type="search"]:focus, input[type="date"]:focus, input[type="text"]:focus{border-color:var(--brand)}
+  .meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .kpi{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);padding:12px 14px;border-radius:14px;display:flex;gap:8px;align-items:center}
+  .kpi .dot{width:10px;height:10px;border-radius:50%}
+  .kpi .val{font-weight:700}
+  .progress-wrap{margin:14px 0}
+  .progress{height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+  .progress > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),#5aa0ff);transition:width .4s ease}
+
+  main{padding:24px 18px}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:880px){.grid{grid-template-columns:1fr 1fr}}
+
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card .hd{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .card .hd h3{margin:0;font-size:18px}
+  .phase-kpis{display:flex;gap:10px;align-items:center}
+  .badge{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:12px;color:var(--muted)}
+  .badge.ok{border-color:rgba(34,197,94,.35);color:#a7f3d0}
+  .badge.warn{border-color:rgba(245,158,11,.4);color:#fde68a}
+  .list{padding:14px}
+  .task{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:10px;border-radius:12px}
+  .task:hover{background:rgba(255,255,255,.03)}
+  .task label{cursor:pointer}
+  .task .name{font-weight:600}
+  .task .hint{font-size:12px;color:var(--muted)}
+  .task .when{display:flex;gap:8px;align-items:center}
+  .task input[type="checkbox"]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer}
+  .phase-progress{margin:10px 16px 16px}
+  .phase-progress .progress{height:8px}
+
+  footer{padding:24px;color:var(--muted);text-align:center}
+
+  .toast{position:fixed;bottom:24px;left:24px;right:auto;z-index:100;background:#10151f;border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(16px);transition:.3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  .lang-toggle{margin-inline-start:6px}
+  .pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-size:12px}
+
+  /* Tooltip */
+  .tip{position:relative}
+  .tip:hover::after{content:attr(data-tip);position:absolute;bottom:120%;right:0;background:#0f121a;border:1px solid rgba(255,255,255,.12);padding:8px 10px;border-radius:8px;white-space:nowrap;color:var(--muted);font-size:12px}
+
+  /* EN mode (LTR) support */
+  body.ltr{direction:ltr}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="title">
+          <div class="logo"><i>UP</i></div>
+          <h1 id="appTitle">لوحة تنفيذ مشروع "أوبر للطباعة"</h1>
+        </div>
+        <div class="controls">
+          <input id="search" class="search" type="search" placeholder="ابحث عن مهمة… (اسم الوثيقة)" />
+          <button class="btn small" id="toggleLang" title="Language / اللغة">AR/EN</button>
+          <button class="btn small" id="printBtn">طباعة</button>
+          <button class="btn small" id="exportBtn">تصدير تقدم</button>
+          <label class="btn small" for="importFile">استيراد</label>
+          <input id="importFile" type="file" accept="application/json" hidden />
+          <button class="btn small ghost" id="resetBtn">إعادة ضبط</button>
+          <a class="btn small primary" id="saveAppBtn" download="UberPrint-Roadmap.html">تنزيل النسخة</a>
+        </div>
+        <div class="meta">
+          <div class="kpi"><span class="dot" style="background:var(--brand)"></span><span class="label">إجمالي المهام:</span>&nbsp;<span class="val" id="kpiTotal">0</span></div>
+          <div class="kpi"><span class="dot" style="background:var(--ok)"></span><span class="label">المنجز:</span>&nbsp;<span class="val" id="kpiDone">0</span></div>
+          <div class="kpi"><span class="dot" style="background:var(--accent)"></span><span class="label">النسبة:</span>&nbsp;<span class="val" id="kpiPct">0%</span></div>
+          <div class="kpi tip" data-tip="عدد المراحل المكتملة تمامًا">
+            <span class="dot" style="background:linear-gradient(135deg,var(--accent),#ffaa79)"></span>
+            <span class="label">مراحل مكتملة:</span>&nbsp;<span class="val" id="kpiPhases">0</span>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress" aria-label="overall progress"><span id="overallBar"></span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid" id="phasesGrid"><!-- Phases render here --></div>
+  </main>
+
+  <footer>
+    <span class="pill">يحفظ التقدم تلقائيًا على هذا المتصفح (Local Storage)</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+// ========= Data =========
+const PHASES = [
+  {
+    key: 'foundation',
+    ar: {title: 'المرحلة 1: التأسيس القانوني والإداري', hint: 'مدة تقديرية: 2–3 أسابيع', start: 0, days: 18},
+    en: {title: 'Phase 1: Foundation (Legal & Admin)', hint: 'Estimated: 2–3 weeks'},
+    tasks: [
+      { key:'biz-plan',     ar:'خطة العمل (Business Plan)', en:'Business Plan'},
+      { key:'bmc',          ar:'Business Model Canvas',     en:'Business Model Canvas'},
+      { key:'founders',     ar:'اتفاق المؤسسين وتوزيع الحصص', en:'Founders’ Agreement & Equity Split'},
+      { key:'bylaws',       ar:'اللائحة الداخلية / Operating Agreement', en:'Bylaws / Operating Agreement'},
+      { key:'org-roles',    ar:'الهيكل التنظيمي وتوصيف الأدوار', en:'Org Structure & Role Descriptions'}
+    ]
+  },
+  {
+    key: 'technical',
+    ar: {title: 'المرحلة 2: التخطيط التقني', hint: 'مدة: 3–4 أسابيع', start: 18, days: 24},
+    en: {title: 'Phase 2: Technical Planning', hint: 'Estimated: 3–4 weeks'},
+    tasks: [
+      { key:'srs',         ar:'SRS – مواصفات المتطلبات البرمجية', en:'SRS – Software Requirements Spec'},
+      { key:'arch',        ar:'رسم البنية التقنية (Architecture Diagram)', en:'System Architecture Diagram'},
+      { key:'dfd',         ar:'تدفق البيانات (DFD)', en:'Data Flow Diagram (DFD)'},
+      { key:'apis',        ar:'توثيق تكاملات API (الشحن/الدفع/المطابع)', en:'API Integration Docs'},
+      { key:'ux',          ar:'إرشادات UX/UI + نماذج أولية', en:'UI/UX Guidelines + Wireframes'}
+    ]
+  },
+  {
+    key: 'operations',
+    ar: {title: 'المرحلة 3: التشغيل والإجراءات', hint: 'مدة: 4 أسابيع', start: 42, days: 28},
+    en: {title: 'Phase 3: Operations & SOPs', hint: 'Estimated: 4 weeks'},
+    tasks: [
+      { key:'ops-manual',  ar:'دليل التشغيل (Operations Manual)', en:'Operations Manual'},
+      { key:'sops',        ar:'إجراءات التشغيل القياسية (SOPs)', en:'Standard Operating Procedures (SOPs)'},
+      { key:'qa',          ar:'دليل الجودة والشكاوى', en:'Quality Assurance Manual'},
+      { key:'slas',        ar:'اتفاقيات مستوى الخدمة (SLAs)', en:'Service Level Agreements (SLAs)'},
+      { key:'support',     ar:'دليل دعم العملاء (Playbook)', en:'Customer Support Playbook'}
+    ]
+  },
+  {
+    key: 'legal',
+    ar: {title: 'المرحلة 4: القانونية والامتثال', hint: 'مدة: 2–3 أسابيع', start: 70, days: 18},
+    en: {title: 'Phase 4: Legal & Compliance', hint: 'Estimated: 2–3 weeks'},
+    tasks: [
+      { key:'terms',       ar:'شروط الاستخدام (Terms & Conditions)', en:'Terms & Conditions'},
+      { key:'privacy',     ar:'سياسة الخصوصية', en:'Privacy Policy'},
+      { key:'merchant',    ar:'عقد انضمام المطبعة', en:'Merchant / Printer Agreement'},
+      { key:'shipping',    ar:'عقد شركة الشحن', en:'Shipping Partner Agreement'},
+      { key:'tax',         ar:'ملف الامتثال الضريبي (فاتورة إلكترونية/تكويد)', en:'Tax Compliance File'},
+      { key:'pricing',     ar:'سياسة التسعير والعمولات', en:'Pricing & Commission Policy'},
+      { key:'finance',     ar:'النموذج المالي وخطة الميزانية', en:'Financial Model & Budget Plan'}
+    ]
+  },
+  {
+    key: 'marketing',
+    ar: {title: 'المرحلة 5: الهوية والتسويق', hint: 'مدة: 3 أسابيع', start: 88, days: 21},
+    en: {title: 'Phase 5: Branding & Marketing', hint: 'Estimated: 3 weeks'},
+    tasks: [
+      { key:'brandbook',   ar:'كتاب الهوية البصرية (Brand Book)', en:'Brand Book / Visual Identity'},
+      { key:'mkt-strat',   ar:'خطة التسويق (Digital / SEO / Ads)', en:'Marketing Strategy Document'},
+      { key:'content',     ar:'خطة المحتوى والجدولة', en:'Content Plan & Calendar'},
+      { key:'affiliate',   ar:'سياسة الإحالات والشراكات', en:'Affiliate / Referral Program Policy'}
+    ]
+  },
+  {
+    key: 'security',
+    ar: {title: 'المرحلة 6: الأمن والاستدامة', hint: 'مستمرة بعد الإطلاق', start: 109, days: 30},
+    en: {title: 'Phase 6: Security & Sustainability', hint: 'Ongoing after launch'},
+    tasks: [
+      { key:'infosec',     ar:'سياسة أمن المعلومات', en:'Information Security Policy'},
+      { key:'backup',      ar:'خطة النسخ الاحتياطي والطوارئ', en:'Backup & Disaster Recovery Plan'},
+      { key:'risk',        ar:'تقييم المخاطر وخطط التخفيف', en:'Risk Assessment & Mitigation'}
+    ]
+  }
+];
+
+const APP_KEY = 'uberprint_roadmap_state_v1';
+let state = loadState();
+let currentLang = state.lang || 'ar';
+
+function todayISO(){
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d.toISOString().slice(0,10);
+}
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(APP_KEY)) || { tasks:{}, phases:{}, lang:'ar' }; }
+  catch{ return { tasks:{}, phases:{}, lang:'ar' }; }
+}
+
+function saveState(){
+  localStorage.setItem(APP_KEY, JSON.stringify(state));
+}
+
+function idFor(phaseKey, taskKey){ return `${phaseKey}__${taskKey}`; }
+
+function render(){
+  document.body.classList.toggle('ltr', currentLang==='en');
+  document.getElementById('appTitle').textContent = currentLang==='ar' ? 'لوحة تنفيذ مشروع "أوبر للطباعة"' : 'Project Roadmap – Uber Print';
+
+  const grid = document.getElementById('phasesGrid');
+  grid.innerHTML = '';
+
+  let total=0, done=0, phasesDone=0;
+
+  const startBase = new Date(); // اليوم بداية مرجعية
+  startBase.setHours(0,0,0,0);
+
+  PHASES.forEach(phase => {
+    const tList = phase.tasks;
+    const pState = state.phases[phase.key] || {};
+    const pDoneCount = tList.filter(t => !!state.tasks[idFor(phase.key,t.key)]).length;
+    const pTotal = tList.length;
+    const pct = Math.round((pDoneCount / pTotal) * 100);
+    const complete = pDoneCount===pTotal && pTotal>0;
+
+    total += pTotal; done += pDoneCount; if(complete) phasesDone++;
+
+    // dates
+    const startOffset = phase.ar.start || 0; // days offset
+    const startDate = new Date(startBase.getTime() + startOffset*24*3600*1000);
+    const dueDateDefault = new Date(startDate.getTime() + (phase.ar.days||14)*24*3600*1000);
+
+    const selTitle = currentLang==='ar' ? phase.ar.title : phase.en.title;
+    const selHint  = currentLang==='ar' ? phase.ar.hint  : phase.en.hint;
+
+    const card = document.createElement('section');
+    card.className='card';
+    card.innerHTML = `
+      <div class="hd">
+        <h3>${selTitle}</h3>
+        <div class="phase-kpis">
+          <span class="badge">${selHint}</span>
+          <span class="badge">${currentLang==='ar'?'المهام':''} ${pDoneCount}/${pTotal}</span>
+          <span class="badge ${complete?'ok':(pct<50?'warn':'')}">${pct}%</span>
+          <span class="badge">${currentLang==='ar'?'بداية':''} <input type="date" class="small-date" data-phase="${phase.key}" data-kind="start" value="${pState.start||iso(startDate)}"></span>
+          <span class="badge">${currentLang==='ar'?'موعد نهائي':''} <input type="date" class="small-date" data-phase="${phase.key}" data-kind="due" value="${pState.due||iso(dueDateDefault)}"></span>
+        </div>
+      </div>
+      <div class="list" id="list_${phase.key}"></div>
+      <div class="phase-progress"><div class="progress"><span style="width:${pct}%"></span></div></div>
+    `;
+
+    grid.appendChild(card);
+
+    // Render tasks
+    const list = card.querySelector('.list');
+    tList.forEach(task => {
+      const tid = idFor(phase.key, task.key);
+      const checked = !!state.tasks[tid];
+      const row = document.createElement('div');
+      row.className='task';
+      row.dataset.search = (task.ar + ' ' + task.en).toLowerCase();
+      row.innerHTML = `
+        <input id="cb_${tid}" type="checkbox" ${checked?'checked':''}>
+        <label for="cb_${tid}">
+          <div class="name">${currentLang==='ar'?task.ar:task.en}</div>
+          <div class="hint">${currentLang==='ar'?'وضع المهمة':''} · <span id="st_${tid}">${checked? (currentLang==='ar'?'مكتملة':'Done') : (currentLang==='ar'?'قيد التنفيذ':'In progress')}</span></div>
+        </label>
+        <div class="when">
+          <input type="date" id="due_${tid}" value="${(state.tasks[tid]&&state.tasks[tid].due)||''}" placeholder="موعد"/>
+        </div>
+      `;
+      list.appendChild(row);
+
+      row.querySelector(`#cb_${tid}`).addEventListener('change', (e)=>{
+        setTask(tid, e.target.checked);
+        row.querySelector(`#st_${tid}`).textContent = e.target.checked ? (currentLang==='ar'?'مكتملة':'Done') : (currentLang==='ar'?'قيد التنفيذ':'In progress');
+        render();
+        if (isPhaseNowComplete(phase)) toast(`🎉 ${selTitle} — ${currentLang==='ar'?'اكتملت المرحلة':'Phase completed'}`);
+        if (getOverallPct()===100) toast('🚀 أحسنت! تم إنجاز جميع المهام.');
+      });
+
+      row.querySelector(`#due_${tid}`).addEventListener('change', (e)=>{
+        setTaskDue(tid, e.target.value);
+      });
+    });
+
+    // phase dates handlers
+    card.querySelectorAll('.small-date').forEach(inp=>{
+      inp.addEventListener('change', (e)=>{
+        const k = e.target.dataset.phase; const kind = e.target.dataset.kind;
+        state.phases[k] = state.phases[k] || {}; state.phases[k][kind] = e.target.value; saveState();
+      })
+    });
+  });
+
+  // KPIs & overall bar
+  const pctAll = total? Math.round((done/total)*100) : 0;
+  sel('#kpiTotal').textContent = total;
+  sel('#kpiDone').textContent  = done;
+  sel('#kpiPct').textContent   = pctAll + '%';
+  sel('#kpiPhases').textContent= phasesDone;
+  sel('#overallBar').style.width = pctAll + '%';
+}
+
+function setTask(id, checked){
+  if(!state.tasks[id]) state.tasks[id] = {done:false, due:''};
+  state.tasks[id].done = checked; saveState();
+}
+function setTaskDue(id, dateStr){
+  if(!state.tasks[id]) state.tasks[id] = {done:false, due:''};
+  state.tasks[id].due = dateStr; saveState();
+}
+function isPhaseNowComplete(phase){
+  return phase.tasks.every(t=> state.tasks[idFor(phase.key,t.key)] && state.tasks[idFor(phase.key,t.key)].done );
+}
+function getOverallPct(){
+  let total=0, done=0; PHASES.forEach(p=>{ total+=p.tasks.length; p.tasks.forEach(t=>{ if(state.tasks[idFor(p.key,t.key)]?.done) done++; }); });
+  return total? Math.round(done/total*100) : 0;
+}
+function iso(d){ return d.toISOString().slice(0,10); }
+function sel(q){ return document.querySelector(q); }
+
+// ===== Search =====
+const searchEl = document.getElementById('search');
+searchEl.addEventListener('input', ()=>{
+  const q = searchEl.value.trim().toLowerCase();
+  document.querySelectorAll('.task').forEach(row=>{
+    const hit = row.dataset.search.includes(q);
+    row.style.display = hit? 'grid' : 'none';
+  });
+});
+
+// ===== Toast =====
+const toastEl = document.getElementById('toast');
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  setTimeout(()=> toastEl.classList.remove('show'), 2600);
+}
+
+// ===== Export / Import / Reset / Print =====
+sel('#exportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'uberprint-roadmap-progress.json'; a.click();
+});
+sel('#importFile').addEventListener('change', (e)=>{
+  const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+  r.onload = ()=>{ try{ state = JSON.parse(r.result); saveState(); render(); toast('✅ تم الاستيراد بنجاح'); } catch{ toast('⚠️ ملف غير صالح'); } };
+  r.readAsText(f);
+});
+sel('#resetBtn').addEventListener('click', ()=>{
+  if(confirm('هل تريد إعادة ضبط التقدم؟')){ state={tasks:{}, phases:{}, lang:currentLang}; saveState(); render(); }
+});
+sel('#printBtn').addEventListener('click', ()=> window.print());
+
+// ===== Language toggle (AR/EN) =====
+sel('#toggleLang').addEventListener('click', ()=>{ currentLang = currentLang==='ar'?'en':'ar'; state.lang=currentLang; saveState(); render(); });
+
+// ===== Save this app button (self-contained download) =====
+(function prepDownload(){
+  const btn = sel('#saveAppBtn');
+  fetch(location.href).then(r=>r.text()).then(html=>{
+    const blob = new Blob([html], {type:'text/html'});
+    btn.href = URL.createObjectURL(blob);
+  }).catch(()=>{ btn.remove(); });
+})();
+
+// ===== First render =====
+render();
+</script>
+</body>
+</html>
